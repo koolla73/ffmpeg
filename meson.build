@@ -1046,6 +1046,8 @@ check_pkg_config = [
   ['vulkan_static', ['vulkan/vulkan.h'], ['vkGetInstanceProcAddr'], {'pkg': 'vulkan', 'version': '>= 1.3.277'}],
   ['whisper', ['whisper.h'], ['whisper_init_from_file_with_params'], {'pkg': 'whisper', 'version': '>= 1.7.5'}],
   ['zlib', ['zlib.h'], ['zlibVersion'], {'pkg': 'zlib'}],
+  ['lzma', ['lzma.h'], ['lzma_version_number'], {'pkg': 'liblzma'}],
+  ['bzlib', ['bzlib.h'], ['BZ2_bzlibVersion'], {'pkg': 'bzip2'}],
 ]
 
 if get_option('libshaderc').allowed()
@@ -1137,7 +1139,6 @@ check_components = [
   ['alsa', ['alsa/asoundlib.h'], ['snd_pcm_htimestamp'], ['asound']],
   ['android', ['android/native_window.h'], ['ANativeWindow_acquire'], ['android']],
   ['bcrypt', ['windows.h', 'bcrypt.h'], ['BCryptGenRandom'], ['bcrypt'],{'defines': ['BCRYPT_RNG_ALGORITHM']}],
-  ['bzlib', ['bzlib.h'], ['BZ2_bzlibVersion'], ['bz2']],
   ['camera2ndk', ['stdbool.h', 'stdint.h', 'camera/NdkCameraManager.h'], ['ACameraManager_create'], ['camera2ndk']],
   ['decklink', ['DeckLinkAPI.h'], [], []],
   ['libcelt', ['celt/celt.h'], ['celt_decoder_create_custom'], ['celt0']],
@@ -1188,7 +1189,6 @@ check_components = [
   ['libxavs', ['stdint.h', 'xavs.h'], ['xavs_encoder_encode'], ['xavs'], {'extra_deps': ['libm_extra_deps', 'thread_dep']}],
   ['libxvid', ['xvid.h'], ['xvid_global'], ['xvidcore']],
   ['linux_fb_h', ['linux/fb.h'], [], []],
-  ['lzma', ['lzma.h'], ['lzma_version_number'], ['lzma']],
   ['mbedtls', ['mbedtls/ssl.h'], ['mbedtls_ssl_init'], ['mbedtls', 'mbedx509', 'mbedcrypto']],
   ['mediandk', ['stdint.h', 'media/NdkMediaFormat.h'], ['AMediaFormat_new'], ['mediandk']],
   ['mmal', ['interface/mmal/mmal.h'], ['mmal_port_connect'], ['mmal_core', 'mmal_util', 'mmal_vc_client', 'bcm_host']],
@@ -3642,7 +3642,7 @@ endif
 
 foreach lib: autodetect_libs
   if conf_requested.get(lib, 0) == 1 and conf.get(lib, 0) == 0
-    error('@0@ requested but not found').format(lib)
+    error('@0@ requested but not found'.format(lib))
   endif
 endforeach
 
