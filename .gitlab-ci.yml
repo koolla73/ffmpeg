@@ -97,7 +97,6 @@ with deps:
     name: 'debian:stable'
     docker:
       platform: linux/i386
-  tags: ['gstreamer']
   variables:
     DEPENDENCIES: >-
       python3-pip
