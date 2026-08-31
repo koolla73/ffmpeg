@@ -23,12 +23,14 @@ libavformat_sources = files(
   'id3v1.c',
   'id3v2.c',
   'isom_tags.c',
+  'lcevc.c',
   'metadata.c',
   'mux.c',
   'mux_utils.c',
   'nal.c',
   'options.c',
   'os_support.c',
+  'packet_list.c',
   'protocols.c',
   'riff.c',
   'sdp.c',
@@ -140,6 +142,8 @@ libavformat_optional_sources = {
   'caf_muxer' : files('cafenc.c','caf.c','riff.c'),
   'cavsvideo_demuxer' : files('cavsvideodec.c','rawdec.c'),
   'cavsvideo_muxer' : files('rawenc.c'),
+  'cbs_apv_lavf' : files('cbs_apv.c','cbs.c'),
+  'cbs_av1_lavf' : files('cbs_av1.c','cbs.c'),
   'cdg_demuxer' : files('cdg.c'),
   'cdxl_demuxer' : files('cdxl.c'),
   'chromaprint_muxer' : files('chromaprint.c'),
@@ -387,7 +391,7 @@ libavformat_optional_sources = {
   'mods_demuxer' : files('mods.c'),
   'moflex_demuxer' : files('moflex.c'),
   'mov_demuxer' : files('mov.c','mov_chan.c','mov_esds.c','qtpalette.c','replaygain.c','dovi_isom.c','dvdclut.c'),
-  'mov_muxer' : files('movenc.c','movenchint.c','mov_chan.c','rtp.c','movenccenc.c','movenc_ttml.c','rawutils.c','apv.c','dovi_isom.c','evc.c','cbs.c','cbs_av1.c','cbs_apv.c'),
+  'mov_muxer' : files('movenc.c','movenchint.c','mov_chan.c','rtp.c','movenccenc.c','movenc_ttml.c','rawutils.c','apv.c','dovi_isom.c','evc.c'),
   'mp2_muxer' : files('rawenc.c'),
   'mp3_demuxer' : files('mp3dec.c','replaygain.c'),
   'mp3_muxer' : files('mp3enc.c','rawenc.c','id3v2enc.c'),
@@ -431,7 +435,7 @@ libavformat_optional_sources = {
   'obu_demuxer' : files('av1dec.c'),
   'obu_muxer' : files('rawenc.c'),
   'oga_muxer' : files('oggenc.c','vorbiscomment.c'),
-  'ogg_demuxer' : files('oggdec.c','oggparsecelt.c','oggparsedirac.c','oggparseflac.c','oggparseogm.c','oggparseopus.c','oggparseskeleton.c','oggparsespeex.c','oggparsetheora.c','oggparsevorbis.c','oggparsevp8.c','replaygain.c','vorbiscomment.c','flac_picture.c'),
+  'ogg_demuxer' : files('oggdec.c','oggparsedirac.c','oggparseflac.c','oggparseogm.c','oggparseopus.c','oggparseskeleton.c','oggparsespeex.c','oggparsetheora.c','oggparsevorbis.c','oggparsevp8.c','replaygain.c','vorbiscomment.c','flac_picture.c'),
   'ogg_muxer' : files('oggenc.c','vorbiscomment.c'),
   'ogv_muxer' : files('oggenc.c','vorbiscomment.c'),
   'oma_demuxer' : files('omadec.c','pcm.c','oma.c'),
@@ -483,6 +487,7 @@ libavformat_optional_sources = {
   'pcm_vidc_demuxer' : files('pcmdec.c','pcm.c'),
   'pcm_vidc_muxer' : files('pcmenc.c','rawenc.c'),
   'pdv_demuxer' : files('pdvdec.c'),
+  'pdv_muxer' : files('pdvenc.c'),
   'pipe_protocol' : files('file.c'),
   'pjs_demuxer' : files('pjsdec.c','subtitles.c'),
   'pmp_demuxer' : files('pmpdec.c'),
@@ -547,6 +552,7 @@ libavformat_optional_sources = {
   'segment_muxer' : files('segment.c'),
   'ser_demuxer' : files('serdec.c'),
   'sga_demuxer' : files('sga.c'),
+  'shared_protocol' : files('shared.c'),
   'shorten_demuxer' : files('shortendec.c','rawdec.c'),
   'siff_demuxer' : files('siff.c'),
   'simbiosis_imx_demuxer' : files('imx.c'),
@@ -631,6 +637,7 @@ libavformat_optional_sources = {
   'webm_chunk_muxer' : files('webm_chunk.c'),
   'webm_dash_manifest_muxer' : files('webmdashenc.c'),
   'webm_muxer' : files('matroskaenc.c','matroska.c','avlanguage.c'),
+  'webp_anim_demuxer' : files('webp_anim_dec.c'),
   'webp_muxer' : files('webpenc.c'),
   'webvtt_demuxer' : files('webvttdec.c','subtitles.c'),
   'webvtt_muxer' : files('webvttenc.c'),
@@ -658,6 +665,8 @@ libavformat_optional_sources = {
 libavformat_shlib_sources = files(
   'log2_tab.c',
   'to_upper4.c',
+  'h2645_parse.c',
+  'lcevctab.c',
 )
 
 libavformat_shlib_optional_sources = {
@@ -681,7 +690,10 @@ libavformat_shlib_optional_sources = {
 }
 
 libavformat_tests = [
-  # MANUAL ['seek', files('tests/seek.c')],
+  # ['id3v2', files('tests/id3v2.c')], # MANUAL
+  ['mkdir', files('tests/mkdir.c')],
+  ['rename', files('tests/rename.c')],
+  # ['seek', files('tests/seek.c')], # MANUAL
   ['url', files('tests/url.c')],
   ['seek_utils', files('tests/seek_utils.c')],
 ]

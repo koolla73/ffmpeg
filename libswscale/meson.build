@@ -14,7 +14,9 @@ libswscale_sources = files(
   'csputils.c',
   'hscale.c',
   'hscale_fast_bilinear.c',
+  'filters.c',
   'format.c',
+  'framepool.c',
   'gamma.c',
   'graph.c',
   'input.c',
@@ -38,7 +40,7 @@ libswscale_headers = files(
 )
 
 libswscale_optional_sources = {
-  'unstable' : files('ops.c','ops_backend.c','ops_chain.c','ops_dispatch.c','ops_memcpy.c','ops_optimizer.c'),
+  'unstable' : files('ops.c','ops_chain.c','ops_dispatch.c','ops_memcpy.c','ops_optimizer.c','rational64.c','uops.c','uops_backend.c'),
 }
 
 libswscale_shlib_sources = files(
@@ -50,11 +52,14 @@ libswscale_tests = [
   ['colorspace', files('tests/colorspace.c')],
   ['floatimg_cmp', files('tests/floatimg_cmp.c')],
   ['pixdesc_query', files('tests/pixdesc_query.c')],
-  # MANUAL ['swscale', files('tests/swscale.c')],
-  # MANUAL ['sws_ops', files('tests/sws_ops.c')],
+  # ['swscale', files('tests/swscale.c')], # MANUAL
+  # ['sws_ops', files('tests/sws_ops.c')], # MANUAL
+  # ['sws_ops_aarch64', files('tests/sws_ops_aarch64.c')], # MANUAL
 ]
 
 #### --- END GENERATED --- ####
+
+libswscale_shlib_optional_sources = {}
 
 # Version file
 ver_conf = configuration_data()
@@ -73,3 +78,10 @@ libswscale_ver = configure_file(
 subdir('aarch64')
 subdir('arm')
 subdir('x86')
+subdir('vulkan')
+
+if conf.get('vulkan', 0) == 1
+  libswscale_optional_sources += {
+    'unstable': libswscale_optional_sources['unstable'] + libswscale_vulkan_sources
+  }
+endif

@@ -14,8 +14,8 @@ libavcodec_x86_optional_sources = {
   'mpegvideo' : files('mpegvideo.c'),
   'mpegvideoenc' : files('mpegvideoenc.c'),
   'mpegvideoencdsp' : files('mpegvideoencdsp_init.c'),
-  'snow_decoder' : files('snowdsp.c'),
-  'snow_encoder' : files('snowdsp.c'),
+  'snow_decoder' : files('snowdsp_init.c'),
+  'snow_encoder' : files('snowdsp_init.c'),
   'truehd_decoder' : files('mlpdsp_init.c'),
   'xmm_clobber_test' : files('w64xmmtest.c'),
 }
@@ -67,11 +67,13 @@ libavcodec_x86_x86asm_optional_sources = {
   'pixblockdsp' : files('pixblockdsp_init.c','pixblockdsp.asm'),
   'png_decoder' : files('pngdsp_init.c','pngdsp.asm'),
   'prores_decoder' : files('proresdsp_init.c'), # MANUAL
-  'prores_raw_decoder' : files('proresdsp_init.c'), # MANUAL
+  'prores_raw_decoder' : files('proresdsp_init.c'), # MANUAL
   'qpeldsp' : files('qpeldsp_init.c','qpeldsp.asm','fpel.asm','qpel.asm'),
   'rv34dsp' : files('rv34dsp_init.c','rv34dsp.asm'),
   'rv40_decoder' : files('rv40dsp_init.c','rv40dsp.asm'),
   'sbc_encoder' : files('sbcdsp_init.c','sbcdsp.asm'),
+  'snow_decoder' : files('snowdsp.asm'),
+  'snow_encoder' : files('snowdsp.asm'),
   'svq1_encoder' : files('svq1enc_init.c','svq1enc.asm'),
   'tak_decoder' : files('takdsp_init.c','takdsp.asm'),
   'truehd_decoder' : [], # MANUAL
@@ -89,12 +91,14 @@ libavcodec_x86_x86asm_optional_sources = {
   'vp9_decoder' : files('vp9dsp_init.c','vp9dsp_init_10bpp.c','vp9dsp_init_12bpp.c','vp9dsp_init_16bpp.c','vp9intrapred.asm','vp9intrapred_16bpp.asm','vp9itxfm.asm','vp9itxfm_16bpp.asm','vp9lpf.asm','vp9lpf_16bpp.asm','vp9mc.asm','vp9mc_16bpp.asm'), # MANUAL
 }
 
+# libavcodec_x86_emms_sources = files(
+#   'emms.asm', # MANUAL
+# )
+
 #### --- END GENERATED --- ####
 
 subdir('hevc')
 subdir('vvc')
-
-libavcodec_x86_optional_sources += libavcodec_x86_hevc_optional_sources
 
 libavcodec_x86_x86asm_optional_sources += libavcodec_x86_hevc_x86asm_optional_sources
 
@@ -133,18 +137,24 @@ elif conf.get('x86_64', 0) == 1
   endif
 
   if conf.get('hevc_decoder') == 1
-    libavcodec_x86_optional_sources += {
-      'hevc_decoder': libavcodec_x86_optional_sources ['hevc_decoder'] + files('h26x/h2656dsp.c')
+    libavcodec_x86_x86asm_optional_sources += {
+      'hevc_decoder': libavcodec_x86_x86asm_optional_sources ['hevc_decoder'] + files('h26x/h2656dsp.c')
     }
     libavcodec_x86_x86asm_optional_sources += {
       'hevc_decoder': libavcodec_x86_x86asm_optional_sources ['hevc_decoder'] + files('h26x/h2656_inter.asm')
     }
   elif conf.get('vvc_decoder') == 1
-    libavcodec_x86_optional_sources += {
-      'vvc_decoder': libavcodec_x86_optional_sources ['vvc_decoder'] + files('h26x/h2656dsp.c')
+    libavcodec_x86_x86asm_optional_sources += {
+      'vvc_decoder': libavcodec_x86_x86asm_optional_sources ['vvc_decoder'] + files('h26x/h2656dsp.c')
     }
     libavcodec_x86_x86asm_optional_sources += {
       'vvc_decoder': libavcodec_x86_x86asm_optional_sources ['vvc_decoder'] + files('h26x/h2656_inter.asm')
     }
   endif
+endif
+
+if conf.get('mmx_inline', 0) == 0 and conf.get('mmx_empty', 0) == 0
+  libavcodec_shlib_optional_sources += {
+    'mmx_external': files('emms.asm')
+  }
 endif

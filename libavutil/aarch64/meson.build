@@ -13,6 +13,10 @@ libavutil_aarch64_neon_sources = files(
   'tx_float_neon.S',
 )
 
+libavutil_aarch64_neon_optional_sources = {
+  'pixelutils' : files('pixelutils_neon.S'),
+}
+
 libavutil_aarch64_sve_sources = files(
   'cpu_sve.S',
 )

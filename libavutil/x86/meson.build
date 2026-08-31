@@ -5,8 +5,6 @@ libavutil_x86_sources = files(
 )
 
 libavutil_x86_x86asm_sources = files(
-  # 'aes.asm', # MANUAL
-  # 'aes_init.c', # MANUAL
   'cpuid.asm',
   'crc.asm',
   'fixed_dsp.asm',
@@ -19,12 +17,17 @@ libavutil_x86_x86asm_sources = files(
   'lls_init.c',
   'tx_float.asm',
   'tx_float_init.c',
+  'aes.asm',
+  'aes_init.c',
 )
 
 libavutil_x86_x86asm_optional_sources = {
-  'mmx_external' : files('emms.asm'), # MANUAL
-  'pixelutils' : files('pixelutils.asm','pixelutils_init.c'),
+  'pixelutils' : files('pixelutils.asm'),
 }
+
+# libavutil_x86_emms_sources = files(
+#   'emms.asm', # MANUAL
+# )
 
 #### --- END GENERATED --- ####
 
@@ -33,4 +36,10 @@ if conf.get('aesni_external', 0) == 1
     'aes_init.c',
     'aes.asm',
   )
+endif
+
+if conf.get('mmx_inline', 0) == 0 and conf.get('mmx_empty', 0) == 0
+  libavutil_slib_optional_sources += {
+    'mmx_external': files('emms.asm')
+  }
 endif

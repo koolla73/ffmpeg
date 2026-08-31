@@ -21,7 +21,7 @@ libavfilter_x86_x86asm_optional_sources = {
   'fspp_filter' : files('vf_fspp.asm','vf_fspp_init.c'),
   'gblur_filter' : files('vf_gblur.asm','vf_gblur_init.c'),
   'gradfun_filter' : files('vf_gradfun.asm','vf_gradfun_init.c'),
-  'haldclut_filter' : files('vf_lut3d_init.c'),
+  'haldclut_filter' : files('vf_lut3d_init.c'), # MANUAL
   'hflip_filter' : files('vf_hflip.asm','vf_hflip_init.c'),
   'hqdn3d_filter' : files('vf_hqdn3d.asm','vf_hqdn3d_init.c'),
   'idet_filter' : files('vf_idetdsp.asm','vf_idetdsp_init.c'),
@@ -30,7 +30,7 @@ libavfilter_x86_x86asm_optional_sources = {
   'lut3d_filter' : files('vf_lut3d.asm','vf_lut3d_init.c'),
   'maskedclamp_filter' : files('vf_maskedclamp.asm','vf_maskedclamp_init.c'),
   'maskedmerge_filter' : files('vf_maskedmerge.asm','vf_maskedmerge_init.c'),
-  'nlmeans_filter' : files('vf_nlmeans_init.c'),
+  'nlmeans_filter' : files('vf_nlmeans_init.c'), # MANUAL
   'overlay_filter' : files('vf_overlay.asm','vf_overlay_init.c'),
   'pp7_filter' : files('vf_pp7.asm','vf_pp7_init.c'),
   'psnr_filter' : files('vf_psnr.asm','vf_psnr_init.c'),
@@ -45,12 +45,16 @@ libavfilter_x86_x86asm_optional_sources = {
   'threshold_filter' : files('vf_threshold.asm','vf_threshold_init.c'),
   'tinterlace_filter' : files('vf_interlace.asm','vf_tinterlace_init.c'),
   'transpose_filter' : files('vf_transpose.asm','vf_transpose_init.c'),
-  'v360_filter' : files('vf_v360_init.c'),
+  'v360_filter' : files('vf_v360_init.c'), # MANUAL
   'volume_filter' : files('af_volume.asm','af_volume_init.c'),
   'w3fdif_filter' : files('vf_w3fdif.asm','vf_w3fdif_init.c'),
   'xpsnr_filter' : files('vf_psnr.asm','vf_psnr_init.c'),
   'yadif_filter' : files('vf_yadif.asm','yadif-16.asm','yadif-10.asm','vf_yadif_init.c'),
 }
+
+# libavfilter_x86_emms_sources = files(
+#   'emms.asm', # MANUAL
+# )
 
 #### --- END GENERATED --- ####
 
@@ -114,3 +118,8 @@ if conf.get('avx2_external', 0) == 1 or conf.get('avx512icl_external', 0) == 1
   endforeach
 endif
 
+if conf.get('mmx_inline', 0) == 0 and conf.get('mmx_empty', 0) == 0
+  libavfilter_shlib_optional_sources += {
+    'mmx_external': files('emms.asm')
+  }
+endif

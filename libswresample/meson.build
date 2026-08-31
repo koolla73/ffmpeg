@@ -36,6 +36,7 @@ libswresample_shlib_sources = files(
 
 libswresample_tests = [
   ['swresample', files('tests/swresample.c')],
+  ['swresample_resample_realloc', files('tests/swresample_resample_realloc.c')],
 ]
 
 #### --- END GENERATED --- ####

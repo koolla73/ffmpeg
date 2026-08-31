@@ -56,8 +56,8 @@ libavdevice_optional_sources = {
 }
 
 libavdevice_shlib_optional_sources = {
-  'decklink_indev' : files('reverse.c'),
-  'decklink_outdev' : files('ccfifo.c'),
+  'decklink_indev' : files('reverse.c','packet_list.c'),
+  'decklink_outdev' : files('ccfifo.c','packet_list.c'),
 }
 
 libavdevice_optional_tests = {

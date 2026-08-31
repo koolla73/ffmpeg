@@ -8,6 +8,7 @@ libavcodec_bsf_optional_sources = {
   'chomp_bsf' : files('chomp.c'),
   'dca_core_bsf' : files('dca_core.c'),
   'dovi_rpu_bsf' : files('dovi_rpu.c'),
+  'dovi_split_bsf' : files('dovi_split.c'),
   'dts2pts_bsf' : files('dts2pts.c'),
   'dump_extradata_bsf' : files('dump_extradata.c'),
   'dv_error_marker_bsf' : files('dv_error_marker.c'),

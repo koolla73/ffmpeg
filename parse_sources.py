@@ -40,11 +40,15 @@ SOURCE_TYPE_EXTS_MAP = {
     'sme': ASM_EXTS,
     'sme2': ASM_EXTS,
     'test-prog': ['c'],
-    'mmx': ['c'],
+    'emms': ASM_EXTS,
     'shlib': ['c'],
     'slib': ['c'],
     'cuda': ['cu'],
     'vulkan': ['comp.glsl'],
+    'avcodec': ['c'],
+    'avfilter': ['c'],
+    'avutil': ['c'],
+    'swscale': ['c'],
 }
 SOURCE_TYPE_DOUBLE_EXTS_MAP = {
     'metallib.o': ['metal'],
@@ -55,7 +59,7 @@ SOURCE_TYPE_DIRS = {'test-prog': 'tests'}
 
 
 def add_source(f, source: str, prefix='', suffix=''):
-    if not source.startswith(('opencl/', 'metal/', 'cuda/', '../', 'h26x/', 'hevc/', 'vulkan/')):
+    if not source.startswith(('opencl/', 'metal/', 'cuda/', '../', 'h26x/', 'hevc/', 'vulkan/', 'ext/')):
         source = source.split('/', maxsplit=1)[-1]
     f.write("%s'%s'%s" % (prefix, source, suffix))
 
@@ -80,10 +84,14 @@ def make_to_meson(path):
       'sme': defaultdict(list),
       'sme2': defaultdict(list),
       'test-prog': defaultdict(list),
-      'mmx': defaultdict(list),
+      'emms': defaultdict(list),
       'shlib': defaultdict(list),
       'slib': defaultdict(list),
       'vulkan': defaultdict(list),
+      'avcodec': defaultdict(list),
+      'avfilter': defaultdict(list),
+      'avutil': defaultdict(list),
+      'swscale': defaultdict(list),
     }
 
     skipped = set()
@@ -100,6 +108,38 @@ def make_to_meson(path):
 
             if accumulate:
                 ofiles = l
+            elif re.match(r'AVCODECOBJS-.*CONFIG.*\+\=.*', l):
+                label, ofiles = l.split('+=')
+                label = label.split('CONFIG_')[1].rstrip(' )')
+                source_type = 'avcodec'
+            elif re.match(r'AVFILTEROBJS-.*CONFIG.*\+\=.*', l):
+                label, ofiles = l.split('+=')
+                label = label.split('CONFIG_')[1].rstrip(' )')
+                source_type = 'avfilter'
+            elif re.match('SWSCALE.*=.*', l):
+                label = ''
+                ofiles = l.split('=')[1]
+                source_type = 'swscale'
+            elif re.match(r'AVUTILOBJS-.*CONFIG.*\+\=.*', l):
+                label, ofiles = l.split('+=')
+                label = label.split('CONFIG_')[1].rstrip(' )')
+                source_type = 'avutil'
+            elif re.match('AVUTILOBJS.*=.*', l):
+                label = ''
+                ofiles = l.split('=')[1]
+                source_type = 'avutil'
+            elif re.match(r'EXT_CHECKASMOBJS-.*ARCH.*\+\=.*', l):
+                label, ofiles = l.split('+=')
+                label = label.split('ARCH_')[1].rstrip(' )')
+                source_type = 'c' # arguable ^^
+            elif re.match(r'EXT_CHECKASMOBJS-.*HAVE.*\+\=.*', l):
+                label, ofiles = l.split('+=')
+                label = label.split('HAVE_')[1].rstrip(' )')
+                source_type = 'c' # arguable ^^
+            elif re.match('EXT_CHECKASMOBJS.*=.*', l):
+                label = ''
+                ofiles = l.split('=')[1]
+                source_type = 'c'
             elif m := re.match(r'OBJS-\$\((?P<neg>!?)(?:CONFIG|HAVE)_(?P<label>[^\)]+)\)\s*\+=\s*(?P<files>.+)', l):
                 label = m.group('label')
                 if m.group('neg'):
@@ -154,18 +194,18 @@ def make_to_meson(path):
                 label, ofiles = l.split('+=')
                 label = label.split('CONFIG_')[1].rstrip(' )')
                 source_type = 'c'  # arguable ^^
-            elif re.match(r'MMX-OBJS-.*CONFIG.*\+\=.*', l):
+            elif re.match(r'EMMS_OBJS_.*CONFIG.*\+\=.*', l):
                 label, ofiles = l.split('+=')
                 label = label.split('CONFIG_')[1].rstrip(' )')
-                source_type = 'mmx'
-            elif re.match(r'MMX-OBJS-.*HAVE.*\+\=.*', l):
+                source_type = 'emms'
+            elif re.match(r'EMMS_OBJS_.*HAVE.*\+\=.*', l):
                 label, ofiles = l.split('+=')
                 label = label.split('HAVE_')[1].rstrip(' )')
-                source_type = 'mmx'
-            elif re.match('MMX-OBJS.*=.*', l):
+                source_type = 'emms'
+            elif re.match('EMMS_OBJS_.*=.*', l):
                 label = ''
                 ofiles = l.split('=')[1]
-                source_type = 'mmx'
+                source_type = 'emms'
             elif re.match(r'ARMV5TE-OBJS-.*CONFIG.*\+\=.*', l):
                 label, ofiles = l.split('+=')
                 label = label.split('CONFIG_')[1].rstrip(' )')
@@ -355,11 +395,15 @@ def make_to_meson(path):
         ('sme_', source_maps['sme']),
         ('sme2_', source_maps['sme2']),
         ('vfp_', source_maps['vfp']),
-        ('mmx_', source_maps['mmx']),
+        ('emms_', source_maps['emms']),
         ('shlib_', source_maps['shlib']),
         ('slib_', source_maps['slib']),
         ('cuda_', cuda_source_maps),
-        ('vulkan_', source_maps['vulkan'])
+        ('vulkan_', source_maps['vulkan']),
+        ('avcodec_', source_maps['avcodec']),
+        ('avfilter_', source_maps['avfilter']),
+        ('avutil_', source_maps['avutil']),
+        ('swscale_', source_maps['swscale']),
     )
 
     for source_type, map_ in source_types:
@@ -540,14 +584,11 @@ paths = [
         # 'libswscale/riscv',
         # 'libswscale/tests',
         'libswscale/x86',
+        'libswscale/vulkan',
         # 'presets',
         # 'tests',
         # 'tests/api',
-        # 'tests/checkasm',
-        # 'tests/checkasm/aarch64',
-        # 'tests/checkasm/arm',
-        # 'tests/checkasm/riscv',
-        # 'tests/checkasm/x86',
+        'tests/checkasm',
         # 'tests/fate',
         # 'tests/filtergraphs',
         # 'tests/maps',

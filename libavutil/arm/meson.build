@@ -3,6 +3,10 @@ libavutil_arm_sources = files(
   'float_dsp_init_arm.c',
 )
 
+libavutil_arm_armv6_optional_sources = {
+  'pixelutils' : files('pixelutils_armv6.S'),
+}
+
 libavutil_arm_neon_sources = files(
   'float_dsp_init_neon.c',
   'float_dsp_neon.S',

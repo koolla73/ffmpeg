@@ -297,6 +297,7 @@ libavfilter_optional_sources = {
   'framepack_filter' : files('vf_framepack.c'),
   'framerate_filter' : files('vf_framerate.c'),
   'framestep_filter' : files('vf_framestep.c'),
+  'frc_amf_filter' : files('vf_frc_amf.c','vf_amf_common.c'),
   'freezedetect_filter' : files('vf_freezedetect.c'),
   'freezeframes_filter' : files('vf_freezeframes.c'),
   'frei0r_filter' : files('vf_frei0r.c'),
@@ -358,9 +359,7 @@ libavfilter_optional_sources = {
   'lenscorrection_filter' : files('vf_lenscorrection.c'),
   'lensfun_filter' : files('vf_lensfun.c'),
   'libc_msvcrt' : files('file_open.c'),
-  'libglslang' : files('vulkan_glslang.c'),
   'libplacebo_filter' : files('vf_libplacebo.c','vulkan.c','vulkan_filter.c'),
-  'libshaderc' : files('vulkan_shaderc.c'),
   'libvmaf_cuda_filter' : files('vf_libvmaf.c','framesync.c'),
   'libvmaf_filter' : files('vf_libvmaf.c','framesync.c'),
   'life_filter' : files('vsrc_life.c'),
@@ -476,12 +475,10 @@ libavfilter_optional_sources = {
   'rubberband_filter' : files('af_rubberband.c'),
   'sab_filter' : files('vf_sab.c'),
   'scale2ref_filter' : files('vf_scale.c','scale_eval.c','framesync.c'),
-  'scale2ref_npp_filter' : files('vf_scale_npp.c','scale_eval.c'),
-  'scale_cuda_filter' : files('vf_scale_cuda.c','scale_eval.c','cuda/load_helper.c'),
+  'scale_cuda_filter' : files('vf_scale_cuda.c','scale_eval.c','scale_filters.c','cuda/load_helper.c'),
   'scale_d3d11_filter' : files('vf_scale_d3d11.c','scale_eval.c'),
   'scale_d3d12_filter' : files('vf_scale_d3d12.c','scale_eval.c'),
   'scale_filter' : files('vf_scale.c','scale_eval.c','framesync.c'),
-  'scale_npp_filter' : files('vf_scale_npp.c','scale_eval.c'),
   'scale_qsv_filter' : files('vf_vpp_qsv.c'),
   'scale_vaapi_filter' : files('vf_scale_vaapi.c','scale_eval.c','vaapi_vpp.c'),
   'scale_vt_filter' : files('vf_scale_vt.c','scale_eval.c'),
@@ -503,7 +500,6 @@ libavfilter_optional_sources = {
   'setrange_filter' : files('vf_setparams.c'),
   'setsar_filter' : files('vf_aspect.c'),
   'settb_filter' : files('settb.c'),
-  'sharpen_npp_filter' : files('vf_sharpen_npp.c'),
   'sharpness_vaapi_filter' : files('vf_misc_vaapi.c','vaapi_vpp.c'),
   'shear_filter' : files('vf_shear.c'),
   'showcqt_filter' : files('avf_showcqt.c','lswsutils.c','lavfutils.c'),
@@ -576,8 +572,8 @@ libavfilter_optional_sources = {
   'tonemap_opencl_filter' : files('vf_tonemap_opencl.c','opencl.c','opencl/tonemap.cl','opencl/colorspace_common.cl'),
   'tonemap_vaapi_filter' : files('vf_tonemap_vaapi.c','vaapi_vpp.c'),
   'tpad_filter' : files('vf_tpad.c'),
+  'transpose_cuda_filter' : files('vf_transpose_cuda.c','cuda/load_helper.c'),
   'transpose_filter' : files('vf_transpose.c'),
-  'transpose_npp_filter' : files('vf_transpose_npp.c'),
   'transpose_opencl_filter' : files('vf_transpose_opencl.c','opencl.c','opencl/transpose.cl'),
   'transpose_vaapi_filter' : files('vf_transpose_vaapi.c','vaapi_vpp.c'),
   'transpose_vt_filter' : files('vf_transpose_vt.c'),
@@ -591,6 +587,7 @@ libavfilter_optional_sources = {
   'untile_filter' : files('vf_untile.c'),
   'uspp_filter' : files('vf_uspp.c','qp_table.c'),
   'v360_filter' : files('vf_v360.c'),
+  'v360_vulkan_filter' : files('vf_v360_vulkan.c'),
   'vaguedenoiser_filter' : files('vf_vaguedenoiser.c'),
   'varblur_filter' : files('vf_varblur.c','framesync.c'),
   'vectorscope_filter' : files('vf_vectorscope.c'),
@@ -650,14 +647,15 @@ libavfilter_cuda_optional_sources = {
   'pad_cuda_filter' : files('vf_pad_cuda.cu'),
   'scale_cuda_filter' : files('vf_scale_cuda.cu'),
   'thumbnail_cuda_filter' : files('vf_thumbnail_cuda.cu'),
+  'transpose_cuda_filter' : files('vf_transpose_cuda.cu'),
   'yadif_cuda_filter' : files('vf_yadif_cuda.cu'),
 }
 
 libavfilter_tests = [
   ['drawutils', files('tests/drawutils.c')],
-  # MANUAL ['filtfmts', files('tests/filtfmts.c')],
+  # ['filtfmts', files('tests/filtfmts.c')], # MANUAL
   ['formats', files('tests/formats.c')],
-  # MANUAL ['integral', files('tests/integral.c')],
+  # ['integral', files('tests/integral.c')], # MANUAL
 ]
 
 libavfilter_optional_tests = {
@@ -674,6 +672,8 @@ languages_map += {
   'gfxcapture_filter': ['cpp'],
 }
 #### --- END GENERATED --- ####
+
+libavfilter_shlib_optional_sources = {}
 
 subdir('dnn')
 subdir('vulkan')
