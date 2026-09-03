@@ -2422,6 +2422,13 @@ foreach check : all_checks
           if cc.has_header_symbol(headers[0], symbol, dependencies : extra_deps, prefix: prefix, args : c_args + project_c_args)
             n_funcs_found += 1
           endif
+        elif name in ['libtesseract', 'libkvazaar', 'librubberband', 'libopenh264', 'libvmaf']
+          # Static C++ archives: a C TU does not pull the C++
+          # runtime. Probe with the C++ compiler so MSVC / libc++ /
+          # libstdc++ all get the driver-provided runtime.
+          if meson.get_compiler('cpp').has_function(symbol, dependencies : extra_deps, prefix: prefix, args : c_args + project_c_args)
+            n_funcs_found += 1
+          endif
         else
           if cc.has_function(symbol, dependencies : extra_deps, prefix: prefix, args : c_args + project_c_args)
             n_funcs_found += 1
