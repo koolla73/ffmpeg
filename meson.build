@@ -1134,6 +1134,8 @@ conf.set10('vdpau', cc.has_header('vdpau/vdpau.h') and
 
 conf.set10('nanosleep', cc.has_function('nanosleep', prefix: '#include <time.h>'))
 
+# Unix/MinGW ship -lm. MSVC/clang-cl keep sin in the CRT.
+libm_libs = cc.find_library('m', required: false).found() ? ['m'] : []
 check_components = [
   ['advapi32', ['windows.h'], ['RegCloseKey'], ['advapi32']],
   ['avisynth', ['avisynth/avisynth_c.h', 'avisynth/avs/version.h'], [], []],
@@ -1165,7 +1167,7 @@ check_components = [
   ['libgsm', ['gsm/gsm.h'], ['gsm_create'], ['gsm']],
   ['libiec61883', ['libiec61883/iec61883.h'], ['iec61883_cmp_connect'], ['raw1394', 'avc1394', 'rom1394', 'iec61883']],
   ['libilbc', ['ilbc.h'], ['WebRtcIlbcfix_InitDecode'], ['lbc']],
-  ['libm', ['math.h'], ['sin'], ['m'], {'always-check': true}], # always check for libm don't provide an option to disable it
+  ['libm', ['math.h'], ['sin'], libm_libs, {'always-check': true}], # always check for libm don't provide an option to disable it
   ['libopenvino', ['c_api/ie_c_api.h'], ['ie_c_api_version'], ['inference_engine_c_api']],
   ['libnpp', ['npp.h'], ['nppGetLibVersion'], ['nppig', 'nppicc', 'nppc', 'nppidei', 'nppif']],
   ['libnpp', ['npp.h'], ['nppGetLibVersion'], ['nppi', 'nppif', 'nppc', 'nppidei']],
