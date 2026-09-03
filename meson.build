@@ -1075,6 +1075,7 @@ if get_option('libvpx').allowed()
 endif
 
 if get_option('libwebp').allowed()
+  conf.set('libwebp', 1)
   check_pkg_config += [
     ['libwebp_encoder', ['webp/encode.h'], ['WebPGetEncoderVersion'], {'pkg': 'libwebp', 'version': '>= 0.2.0'}],
     ['libwebp_anim_encoder', ['webp/mux.h'], ['WebPAnimEncoderOptionsInit'], {'pkg': 'libwebpmux', 'version': '>= 0.4.0'}],
