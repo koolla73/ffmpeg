@@ -1190,7 +1190,7 @@ check_components = [
   ['libvpx_vp9_encoder', ['vpx/vpx_encoder.h', 'vpx/vp8cx.h'], ['vpx_codec_vp9_cx'], ['vpx'],
     {'defines': ['VPX_IMG_FMT_HIGHBITDEPTH'], 'extra_deps': ['libm_extra_deps', 'thread_dep']}],
   ['libxavs', ['stdint.h', 'xavs.h'], ['xavs_encoder_encode'], ['xavs'], {'extra_deps': ['libm_extra_deps', 'thread_dep']}],
-  ['libxvid', ['xvid.h'], ['xvid_global'], ['xvidcore']],
+  ['libxvid', ['xvid.h'], ['xvid_global'], ['xvidcore'], {'extra_deps': ['libm_extra_deps']}],
   ['linux_fb_h', ['linux/fb.h'], [], []],
   ['mbedtls', ['mbedtls/ssl.h'], ['mbedtls_ssl_init'], ['mbedtls', 'mbedx509', 'mbedcrypto']],
   ['mediandk', ['stdint.h', 'media/NdkMediaFormat.h'], ['AMediaFormat_new'], ['mediandk']],
