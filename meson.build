@@ -885,7 +885,7 @@ if not cc.has_function('localtime_r', prefix: '#include <time.h>', args: project
   endif
 endif
 
-conf.set10('int128', cc.compiles('''int main() {
+conf.set10('int128', cc.links('''int main() {
   volatile __int128 i128var = 1; i128var /= 100;
 }
 ''', name: 'Supports int128', args: project_c_args))
