@@ -81,6 +81,10 @@ languages_map = {}
 
 is_msvc = cc.get_define('_MSC_VER') != ''
 
+if true or meson.version().version_compare('<1.12.1') and not meson.version().version_compare('>=1.11.3') and is_msvc
+  warning('This Meson version is known to fail compiler.has_function tests under MSVC depending on the buildtype.\nBefore reporting a bug, please read https://github.com/mesonbuild/meson/issues/16086')
+endif
+
 if cc.get_argument_syntax() == 'msvc'
   # Ignore several spurious warnings for things FFmpeg does very commonly
   # If a warning is completely useless and spammy, use '/wdXXXX' to suppress it
